@@ -1,0 +1,26 @@
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+# Cargar el dataset Iris
+X_iris = load_iris()
+X = X_iris.data  # Datos originales
+
+# Paso 1: Reducción de dimensionalidad a 2 dimensiones usando PCA
+pca = PCA(n_components=2)  # Reducimos a 2 dimensiones
+X_reduced = pca.fit_transform(X)
+
+# Paso 2: Aplicación de K-means en los datos reducidos
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(X_reduced)
+labels = kmeans.labels_  # Etiquetas de cluster asignadas a cada punto
+
+# Visualización de los clusters en 2D
+plt.figure(figsize=(8, 6))
+plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=labels, cmap='viridis', s=50)
+plt.xlabel("Componente Principal 1")
+plt.ylabel("Componente Principal 2")
+plt.title("Clusters en el espacio reducido a 2D con K-means")
+plt.colorbar(label="Cluster")
+plt.show()
