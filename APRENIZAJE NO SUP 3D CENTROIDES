@@ -1,0 +1,43 @@
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Cargar el dataset Iris
+X_iris = load_iris()
+X = X_iris.data  # Datos originales
+
+# Paso 1: Reducción de dimensionalidad a 3 dimensiones usando PCA
+pca = PCA(n_components=3)  # Reducimos a 3 dimensiones
+X_reduced = pca.fit_transform(X)
+
+# Paso 2: Aplicación de K-means en los datos reducidos
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(X_reduced)
+labels = kmeans.labels_  # Etiquetas de cluster asignadas a cada punto
+centroids = kmeans.cluster_centers_  # Coordenadas de los centroides
+
+# Paso 3: Visualización de los clusters en 3D con colores personalizados y centroides
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# Colores personalizados para los clusters
+color_codes = ['C1', 'C2', 'C3']  # Usamos 3 colores para los clusters
+
+# Agrupamos los datos según los clusters y los graficamos
+clusters = []
+for i in range(3):  # Asumiendo que tenemos 3 clusters
+    clusters.append(X_reduced[labels == i])
+    ax.scatter(clusters[i][:, 0], clusters[i][:, 1], clusters[i][:, 2], marker='o', s=50, linewidths=2, color=color_codes[i], label=f'Cluster {i+1}')
+
+# Graficamos los centroides con una "X" en color negro
+ax.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], marker='x', s=169, linewidths=5, color='k', zorder=10, label='Centroides')
+
+# Etiquetas de los ejes
+ax.set_xlabel("Componente Principal 1")
+ax.set_ylabel("Componente Principal 2")
+ax.set_zlabel("Componente Principal 3")
+plt.title("Clusters en 3D con Centroides (K-means)")
+plt.legend()
+plt.show()
