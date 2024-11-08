@@ -1,0 +1,29 @@
+
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Cargar el dataset Iris
+X_iris = load_iris()
+X = X_iris.data  # Datos originales
+
+# Paso 1: Reducción de dimensionalidad a 3 dimensiones usando PCA
+pca = PCA(n_components=3)  # Queremos reducir a 3 dimensiones
+X_reduced = pca.fit_transform(X)
+
+# Paso 2: Aplicación de K-means en los datos reducidos
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(X_reduced)
+labels = kmeans.labels_  # Etiquetas de cluster asignadas a cada punto
+
+# Visualización de los clusters en 3D
+fig = plt.figure(figsize=(8, 6))
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(X_reduced[:, 0], X_reduced[:, 1], X_reduced[:, 2], c=labels, cmap='viridis', s=50)
+ax.set_xlabel("Componente Principal 1")
+ax.set_ylabel("Componente Principal 2")
+ax.set_zlabel("Componente Principal 3")
+plt.title("Clusters en el espacio reducido a 3D con K-means")
+plt.show()
